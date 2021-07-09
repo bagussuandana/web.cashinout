@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    Wellcome to the jungle
+    Login
   </div>
 </template>
 
