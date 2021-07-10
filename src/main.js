@@ -9,4 +9,8 @@ axios.interceptors.request.use((config) => {
     config.withCredentials = true
     return config
 })
-createApp(App).use(store).use(router).mount('#app')
+
+store.dispatch('auth/me').then(() => {
+    createApp(App).use(store).use(router).mount('#app')
+})
+

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store'
 import Home from '../views/Home.vue'
 
 const routes = [
@@ -13,14 +14,22 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
+    path: '/cashes',
+    name: 'cashes',
+    component: () => import(/* webpackChunkName: "cashes" */ '../views/cashes/Index.vue'),
+    meta: {auth: true}
+  },
+  {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/auth/Login.vue')
+    component: () => import(/* webpackChunkName: "login" */ '../views/auth/Login.vue'),
+    meta: {guest: true}
   },
   {
     path: '/register',
     name: 'register',
-    component: () => import(/* webpackChunkName: "register" */ '../views/auth/Register.vue')
+    component: () => import(/* webpackChunkName: "register" */ '../views/auth/Register.vue'),
+    meta: {guest: true}
   }
 ]
 
@@ -28,6 +37,14 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
   linkExactActiveClass: 'bg-blue-500 text-white rounded-lg'
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.auth && !store.getters['auth/authenticated']) router.push('/login')
+  if (to.meta.guest && store.getters['auth/authenticated']) router.push('/')
+
+  next()
+
 })
 
 export default router
